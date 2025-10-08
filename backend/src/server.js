@@ -1,21 +1,20 @@
 import express from "express";
-import dotenv from "dotenv";
+import { ENV } from "./lib/env.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import authRoutes from "./routes/auth.route.js";
 import { connectDB } from "./lib/db.js";
 
-dotenv.config();
 const app = express();
 app.use(cookieParser());
 const __dirname = path.resolve();
 
-const PORT = process.env.PORT || 3000;
+const PORT = ENV.PORT || 3000;
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 
-if (process.env.NODE_ENV === "production") {
+if (ENV.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.use((_, res) => {
@@ -24,6 +23,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`Server running in ${ENV.NODE_ENV} mode on port ${PORT}`);
   connectDB();
 });
